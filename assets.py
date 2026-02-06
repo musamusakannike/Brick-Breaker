@@ -40,6 +40,10 @@ class AssetManager:
         self.star = None
         self.bullet = None
         
+        # Audio
+        self.bg_music = None
+        self.thud_sound = None
+        
         self._load_all_assets()
     
     def _load_sprite(self, filename, scale_to=None):
@@ -107,6 +111,21 @@ class AssetManager:
         self.heart = self._load_sprite("heart.png", (HEART_SIZE, HEART_SIZE))
         self.star = self._load_sprite("star.png", (POWERUP_SIZE, POWERUP_SIZE))
         self.bullet = self._load_sprite("vertical-bullet.png", (19, 41))
+        
+        # Load audio
+        # We need to go up one level from sprites_dir to get to the project root, then into Audios
+        # self.sprites_dir is .../Brick Breaker/Sprites
+        project_dir = os.path.dirname(self.sprites_dir)
+        audios_dir = os.path.join(project_dir, "Audios")
+        
+        try:
+            # Load background music
+            self.bg_music = os.path.join(audios_dir, "bg_music.mp3")
+            
+            # Load sound effects
+            self.thud_sound = pygame.mixer.Sound(os.path.join(audios_dir, "thud.mp3"))
+        except pygame.error as e:
+            print(f"Error loading audio: {e}")
     
     def get_brick_sprite(self, brick_type, is_cracked=False):
         """Get the appropriate brick sprite."""

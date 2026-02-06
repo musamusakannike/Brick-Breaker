@@ -36,7 +36,7 @@ class Ball(pygame.sprite.Sprite):
         
         self.active = False  # Ball attached to paddle until launched
     
-    def update(self, paddle_rect=None):
+    def update(self, paddle_rect=None, wall_sound=None):
         """Update ball position and handle wall collisions."""
         if not self.active:
             # Ball follows paddle
@@ -55,16 +55,23 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y += self.velocity.y
         
         # Wall collisions
+        hit_wall = False
         if self.rect.left <= 0:
             self.rect.left = 0
             self.velocity.x = abs(self.velocity.x)
+            hit_wall = True
         elif self.rect.right >= SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
             self.velocity.x = -abs(self.velocity.x)
+            hit_wall = True
         
         if self.rect.top <= 0:
             self.rect.top = 0
             self.velocity.y = abs(self.velocity.y)
+            hit_wall = True
+            
+        if hit_wall and wall_sound:
+            wall_sound.play()
     
     def launch(self):
         """Launch the ball."""

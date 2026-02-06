@@ -37,6 +37,15 @@ class Game:
         # Load assets
         self.assets = AssetManager()
         
+        # Start background music
+        if self.assets.bg_music:
+            try:
+                pygame.mixer.music.load(self.assets.bg_music)
+                pygame.mixer.music.play(-1)  # Loop indefinitely
+                pygame.mixer.music.set_volume(0.5)  # Set volume to 50%
+            except pygame.error as e:
+                print(f"Error playing music: {e}")
+        
         # Initialize managers
         self.level_manager = LevelManager(self.assets)
         self.powerup_manager = PowerUpManager()
@@ -196,7 +205,7 @@ class Game:
         self.paddle.update(dt)
         
         # Update ball
-        self.ball.update(self.paddle.rect)
+        self.ball.update(self.paddle.rect, self.assets.thud_sound)
         
         # Handle power-up speed effects on ball
         active_powerup = self.powerup_manager.get_active_type()
@@ -212,6 +221,8 @@ class Game:
         
         # Ball-paddle collision
         if self.ball.collide_paddle(self.paddle.rect):
+            if self.assets.thud_sound:
+                self.assets.thud_sound.play()
             self.combo = 0  # Reset combo on paddle hit
         
         # Ball-brick collisions
