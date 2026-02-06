@@ -32,6 +32,7 @@ class Game:
         
         self.clock = pygame.time.Clock()
         self.running = True
+        self.fullscreen = False
         
         # Load assets
         self.assets = AssetManager()
@@ -80,6 +81,15 @@ class Game:
             )
             pygame.draw.line(surface, color, (0, y), (SCREEN_WIDTH, y))
         return surface
+    
+    def _toggle_fullscreen(self):
+        """Toggle between fullscreen and windowed mode."""
+        self.fullscreen = not self.fullscreen
+        if self.fullscreen:
+            self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
     
     def new_game(self):
         """Start a new game."""
@@ -166,6 +176,9 @@ class Game:
                 
                 elif event.key == pygame.K_r and self.state in (STATE_GAME_OVER, STATE_WIN):
                     self.new_game()
+                
+                elif event.key == pygame.K_f:
+                    self._toggle_fullscreen()
             
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left click
@@ -389,6 +402,7 @@ class Game:
             "Mouse - Move paddle",
             "SPACE - Launch ball",
             "Left Click - Shoot (when power-up active)",
+            "F - Toggle Fullscreen",
             "ESC - Pause"
         ]
         
